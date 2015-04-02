@@ -4,8 +4,11 @@ Telegram for Sailfish
 I got tired of waiting for a reasonable native Telegram client for Sailfish and started writing one myself.
 Lets see how far this goes.
 
-Requirements:
-bzr branch lp:libqtelegram
+To compile:
+1. bzr branch lp:libqtelegram
+2. Open sail-e-gram.pro in qtcreator-sailfish
+3. Begin the compile!
+
 
 To compile libqtelegram:
 1. Start from ubuntu:14.10
