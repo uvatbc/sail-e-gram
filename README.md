@@ -1,4 +1,4 @@
-# sailgram
+# sail-e-gram
 Telegram for Sailfish
 
 I got tired of waiting for a reasonable native Telegram client for Sailfish and started writing one myself.
