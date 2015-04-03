@@ -38,3 +38,6 @@ Makefile*
 
 # Everything related to libqtelegram
 libqtelegram/
+
+# DO NOT ALLOW tg.key to come in
+tg.key

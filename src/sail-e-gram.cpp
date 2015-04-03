@@ -7,7 +7,9 @@ main(int argc, char *argv[])
     QGuiApplication *app = SailfishApp::application(argc, argv);
 
     MainWindow *win = new MainWindow(app);
-    win->init();
+    Q_UNUSED(win);
 
-    return app->exec();
+    int rv = app->exec();
+    delete win;
+    return rv;
 }
