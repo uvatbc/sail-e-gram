@@ -14,7 +14,8 @@ TARGET = sail-e-gram
 
 CONFIG += sailfishapp
 
-SOURCES += src/sail-e-gram.cpp
+SOURCES += src/sail-e-gram.cpp \
+    src/MainWindow.cpp
 
 OTHER_FILES += qml/sail-e-gram.qml \
     qml/cover/CoverPage.qml \
@@ -40,3 +41,6 @@ SUBDIRS += \
     libqtelegram.pro
 
 include(libqtelegram.pri)
+
+HEADERS += \
+    src/MainWindow.h

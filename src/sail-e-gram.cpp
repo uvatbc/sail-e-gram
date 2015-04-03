@@ -1,13 +1,13 @@
 #include <sailfishapp.h>
-#include <QtQuick>
+#include "MainWindow.h"
 
 int
 main(int argc, char *argv[])
 {
     QGuiApplication *app = SailfishApp::application(argc, argv);
-    QQuickView *view = SailfishApp::createView();
-    view->setSource(SailfishApp::pathTo("qml/sail-e-gram.qml"));
-    view->show();
+
+    MainWindow *win = new MainWindow(app);
+    win->init();
 
     return app->exec();
 }
