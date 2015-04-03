@@ -12,20 +12,26 @@
 # The name of your application
 TARGET = sail-e-gram
 
-CONFIG += sailfishapp
+CONFIG   += sailfishapp
 
-SOURCES += src/sail-e-gram.cpp \
-    src/MainWindow.cpp
+SOURCES  += src/sail-e-gram.cpp \
+            src/MainWindow.cpp
 
-OTHER_FILES += qml/sail-e-gram.qml \
-    qml/cover/CoverPage.qml \
-    qml/pages/FirstPage.qml \
-    qml/pages/SecondPage.qml \
-    rpm/sail-e-gram.changes.in \
-    rpm/sail-e-gram.spec \
-    rpm/sail-e-gram.yaml \
-    translations/*.ts \
-    sail-e-gram.desktop
+HEADERS  += src/MainWindow.h
+
+RESOURCES += sail-e-gram.qrc
+
+include(libqtelegram.pri)
+
+OTHER_FILES  += qml/sail-e-gram.qml \
+                qml/cover/CoverPage.qml \
+                qml/pages/FirstPage.qml \
+                qml/pages/SecondPage.qml \
+                rpm/sail-e-gram.changes.in \
+                rpm/sail-e-gram.spec \
+                rpm/sail-e-gram.yaml \
+                translations/*.ts \
+                sail-e-gram.desktop
 
 # to disable building translations every time, comment out the
 # following CONFIG line
@@ -36,11 +42,3 @@ CONFIG += sailfishapp_i18n
 # following TRANSLATIONS line. And also do not forget to
 # modify the localized app name in the the .desktop file.
 TRANSLATIONS += translations/sail-e-gram-de.ts
-
-SUBDIRS += \
-    libqtelegram.pro
-
-include(libqtelegram.pri)
-
-HEADERS += \
-    src/MainWindow.h
