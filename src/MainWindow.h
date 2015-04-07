@@ -14,6 +14,9 @@ public:
 private slots:
     void init();
 
+public slots:
+    void userLoginWithPhoneNumber(const QString &number);
+
 private:
     QQuickView *m_view;
     Telegram   *m_telegram;

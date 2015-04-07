@@ -5,6 +5,11 @@ import "pages"
 ApplicationWindow
 {
     initialPage: Component { FirstPage { } }
+
+    SecondPage {
+        id: secondPage
+    }
+
     cover: Qt.resolvedUrl("cover/CoverPage.qml")
 }
 

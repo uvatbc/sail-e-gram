@@ -41,6 +41,13 @@ MainWindow::init()
         }
     }
 
+    m_view->rootContext()->setContextProperty("g_mainwindow", this);
+    m_view->show();
+}//MainWindow::init
+
+void
+MainWindow::userLoginWithPhoneNumber(const QString &number)
+{
     if (!QFileInfo(":/tg.key").exists()) {
         qWarning("No tg.key?");
         qApp->quit();
@@ -49,9 +56,6 @@ MainWindow::init()
 
     QString tg = m_configDir + "/tg.key";
     QFile::copy(":/tg.key", tg);
-
-    m_telegram = new Telegram("+14089059884", m_configDir, tg);
-    m_view->show();
-
+    m_telegram = new Telegram(number, m_configDir, tg);
     QFile::remove(tg);
-}//MainWindow::init
+}//MainWindow::userLoginWithPhoneNumber

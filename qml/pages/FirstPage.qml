@@ -4,39 +4,47 @@ import Sailfish.Silica 1.0
 Page {
     id: page
 
-    // To enable PullDownMenu, place our content in a SilicaFlickable
-    SilicaFlickable {
-        anchors.fill: parent
+    Column {
+        id: startMessaging
 
-        // PullDownMenu and PushUpMenu must be declared in SilicaFlickable, SilicaListView or SilicaGridView
-        PullDownMenu {
-            MenuItem {
-                text: qsTr("Show Page 2")
-                onClicked: pageStack.push(Qt.resolvedUrl("SecondPage.qml"))
-            }
+        anchors.centerIn: parent
+        Label {
+            text: "Welcome to Sail-e-Gram"
+            anchors.horizontalCenter: parent.horizontalCenter
         }
 
-        // Tell SilicaFlickable the height of its content.
-        contentHeight: column.height
-
-        // Place our content in a Column.  The PageHeader is always placed at the top
-        // of the page, followed by our content.
-        Column {
-            id: column
-
-            width: page.width
-            spacing: Theme.paddingLarge
-            PageHeader {
-                title: qsTr("UI Template")
+        Button {
+            text: "Start messaging"
+            anchors.horizontalCenter: parent.horizontalCenter
+            onClicked: {
+                startMessaging.visible = false;
             }
-            Label {
-                x: Theme.paddingLarge
-                text: qsTr("Hello Sailors")
-                color: Theme.secondaryHighlightColor
-                font.pixelSize: Theme.fontSizeExtraLarge
+        }
+    }
+
+    Column {
+        visible: !startMessaging.visible
+        anchors.centerIn: parent
+
+        Label {
+            text: "Enter your number (with country code)"
+            anchors.horizontalCenter: parent.horizontalCenter
+        }
+
+        TextField {
+            id: number
+            width: parent.width
+            placeholderText: "+1 222 333 4444"
+            inputMethodHints: Qt.ImhDialableCharactersOnly
+        }
+
+        Button {
+            text: "Log in"
+            anchors.horizontalCenter: parent.horizontalCenter
+
+            onClicked: {
+                g_mainwindow.userLoginWithPhoneNumber(number.text);
             }
         }
     }
 }
-
-
