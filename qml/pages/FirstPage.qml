@@ -43,7 +43,7 @@ Page {
             anchors.horizontalCenter: parent.horizontalCenter
 
             onClicked: {
-                g_mainwindow.userLoginWithPhoneNumber(number.text);
+                g_mainwindow.userLoginWithMSISDN(number.text);
             }
         }
     }

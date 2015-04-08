@@ -7,7 +7,7 @@ class TelegramEvents : public QObject
 {
     Q_OBJECT
 public:
-    explicit TelegramEvents(QObject *parent = 0);
+    explicit TelegramEvents(Telegram *t, QObject *parent = 0);
 
 protected slots:
     // Errors
@@ -146,6 +146,9 @@ protected slots:
     void onWoken();
 
     void onFatalError();
+
+protected:
+    Telegram *m_telegram;
 };
 
 #endif // TELEGRAMEVENTS_H

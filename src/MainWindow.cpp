@@ -1,11 +1,13 @@
 #include "MainWindow.h"
 #include <sailfishapp.h>
 #include "telegram.h"
+#include "TelegramEvents.h"
 
 MainWindow::MainWindow(QObject *parent)
 : QObject(parent)
 , m_view(SailfishApp::createView())
 , m_telegram(NULL)
+, m_tgEvents(NULL)
 {
     m_view->setSource(SailfishApp::pathTo("qml/sail-e-gram.qml"));
 
@@ -46,7 +48,7 @@ MainWindow::init()
 }//MainWindow::init
 
 void
-MainWindow::userLoginWithPhoneNumber(const QString &number)
+MainWindow::userLoginWithMSISDN(const QString &msisdn)
 {
     if (!QFileInfo(":/tg.key").exists()) {
         qWarning("No tg.key?");
@@ -56,6 +58,8 @@ MainWindow::userLoginWithPhoneNumber(const QString &number)
 
     QString tg = m_configDir + "/tg.key";
     QFile::copy(":/tg.key", tg);
-    m_telegram = new Telegram(number, m_configDir, tg);
+    m_telegram = new Telegram(msisdn, m_configDir, tg);
     QFile::remove(tg);
-}//MainWindow::userLoginWithPhoneNumber
+
+    m_tgEvents = new TelegramEvents(m_telegram, this);
+}//MainWindow::userLoginWithMSISDN

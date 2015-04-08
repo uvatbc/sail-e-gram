@@ -1,8 +1,81 @@
 #include "TelegramEvents.h"
 
-TelegramEvents::TelegramEvents(QObject *parent)
-    : QObject(parent)
+TelegramEvents::TelegramEvents(Telegram *t, QObject *parent)
+: QObject(parent)
+, m_telegram(t)
 {
+    //updates
+    connect(m_telegram, SIGNAL(updatesTooLong()), this, SLOT(onUpdatesTooLong()));
+    connect(m_telegram, SIGNAL(updateShortMessage(qint32,qint32,QString,qint32,qint32,qint32)), this, SLOT(onUpdateShortMessage(qint32,qint32,QString,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updateShortChatMessage(qint32,qint32,qint32,QString,qint32,qint32,qint32)), this, SLOT(onUpdateShortChatMessage(qint32,qint32,qint32,QString,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updateShort(Update,qint32)), this, SLOT(onUpdateShort(Update,qint32)));
+    connect(m_telegram, SIGNAL(updatesCombined(QList<Update>,QList<User>,QList<Chat>,qint32,qint32,qint32)), this, SLOT(onUpdatesCombined(QList<Update>,QList<User>,QList<Chat>,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updates(QList<Update>,QList<User>,QList<Chat>,qint32,qint32)), this, SLOT(onUpdates(QList<Update>,QList<User>,QList<Chat>,qint32,qint32)));
+    //errors
+    connect(m_telegram, SIGNAL(error(qint64,qint32,QString)), this, SLOT(onError(qint64,qint32,QString)));
+    connect(m_telegram, SIGNAL(authSignInError(qint64,qint32,QString)), this, SLOT(onAuthSignInError(qint64,qint32,QString)));
+    connect(m_telegram, SIGNAL(authSignUpError(qint64,qint32,QString)), this, SLOT(onAuthSignUpError(qint64,qint32,QString)));
+    //responses
+    connect(m_telegram, SIGNAL(authNeeded()), this, SLOT(onAuthNeeded()));
+    connect(m_telegram, SIGNAL(authCheckPhoneAnswer(qint64,bool,bool)), this, SLOT(onAuthCheckPhoneAnswer(qint64,bool,bool)));
+    connect(m_telegram, SIGNAL(authSendCodeAnswer(qint64,bool,qint32)), this, SLOT(onAuthSendCodeAnswer(qint64,bool,qint32)));
+    connect(m_telegram, SIGNAL(authSendCallAnswer(qint64,bool)), this, SLOT(onAuthSendCallAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(authLoggedIn()), this, SLOT(onAuthLoggedIn()));
+    connect(m_telegram, SIGNAL(accountRegisterDeviceAnswer(qint64,bool)), this, SLOT(onAccountRegisterDeviceAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(accountUnregisterDeviceAnswer(qint64,bool)), this, SLOT(onAccountUnregisterDeviceAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(accountUpdateNotifySettingsAnswer(qint64,bool)), this, SLOT(onAccountUpdateNotifySettingsAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(accountGetNotifySettingsAnswer(qint64,PeerNotifySettings)), this, SLOT(onAccountGetNotifySettingsAnswer(qint64,PeerNotifySettings)));
+    connect(m_telegram, SIGNAL(accountResetNotifySettingsAnswer(qint64,bool)), this, SLOT(onAccountResetNotifySettingsAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(accountUpdateProfileAnswer(qint64,User)), this, SLOT(onAccountUpdateProfileAnswer(qint64,User)));
+    connect(m_telegram, SIGNAL(accountUpdateStatusAnswer(qint64,bool)), this, SLOT(onAccountUpdateStatusAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(accountGetWallPapersAnswer(qint64,QList<WallPaper>)), this, SLOT(onAccountGetWallPapersAnswer(qint64,QList<WallPaper>)));
+    connect(m_telegram, SIGNAL(photosUploadProfilePhotoAnswer(qint64,Photo,QList<User>)), this, SLOT(onPhotosUploadProfilePhotoAnswer(qint64,Photo,QList<User>)));
+    connect(m_telegram, SIGNAL(photosUpdateProfilePhotoAnswer(qint64,UserProfilePhoto)), this, SLOT(onPhotosUpdateProfilePhotoAnswer(qint64,UserProfilePhoto)));
+    connect(m_telegram, SIGNAL(contactsGetStatusesAnswer(qint64,QList<ContactStatus>)), this, SLOT(onContactsGetStatusesAnswer(qint64,QList<ContactStatus>)));
+    connect(m_telegram, SIGNAL(contactsGetContactsAnswer(qint64,bool,QList<Contact>,QList<User>)), this, SLOT(onContactsGetContactsAnswer(qint64,bool,QList<Contact>,QList<User>)));
+    connect(m_telegram, SIGNAL(contactsImportContactsAnswer(qint64,QList<ImportedContact>,QList<qint64>,QList<User>)), this, SLOT(onContactsImportContactsAnswer(qint64,QList<ImportedContact>,QList<qint64>,QList<User>)));
+    connect(m_telegram, SIGNAL(contactsDeleteContactAnswer(qint64,ContactsMyLink,ContactsForeignLink,User)), this, SLOT(onContactsDeleteContactAnswer(qint64,ContactsMyLink,ContactsForeignLink,User)));
+    connect(m_telegram, SIGNAL(contactsDeleteContactsAnswer(qint64,bool)), this, SLOT(onContactsDeleteContactsAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(contactsBlockAnswer(qint64,bool)), this, SLOT(onContactsBlockAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(contactsUnblockAnswer(qint64,bool)), this, SLOT(onContactsUnblockAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(contactsGetBlockedAnswer(qint64,qint32,QList<ContactBlocked>,QList<User>)), this, SLOT(onContactsGetBlockedAnswer(qint64,qint32,QList<ContactBlocked>,QList<User>)));
+    connect(m_telegram, SIGNAL(usersGetUsersAnswer(qint64,QList<User>)), this, SLOT(onUsersGetUsersAnswer(qint64,QList<User>)));
+    connect(m_telegram, SIGNAL(usersGetFullUserAnswer(qint64,User,ContactsLink,Photo,PeerNotifySettings,bool,QString,QString)), this, SLOT(onUsersGetFullUserAnswer(qint64,User,ContactsLink,Photo,PeerNotifySettings,bool,QString,QString)));
+    connect(m_telegram, SIGNAL(photosGetUserPhotosAnswer(qint64,qint32,QList<Photo>,QList<User>)), this, SLOT(onPhotosGetUserPhotosAnswer(qint64,qint32,QList<Photo>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesSendMessageAnswer(qint64,qint32,qint32,qint32,qint32,QList<ContactsLink>)), this, SLOT(onMessagesSendMessageAnswer(qint64,qint32,qint32,qint32,qint32,QList<ContactsLink>)));
+    connect(m_telegram, SIGNAL(messagesSendPhotoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendPhotoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendVideoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendVideoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendGeoPointAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendGeoPointAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendContactAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendContactAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendDocumentAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendDocumentAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendAudioAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendAudioAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSetTypingAnswer(qint64,bool)), this, SLOT(onMessagesSetTypingAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(messagesGetMessagesAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)), this, SLOT(onMessagesGetMessagesAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesGetDialogsAnswer(qint64,qint32,QList<Dialog>,QList<Message>,QList<Chat>,QList<User>)), this, SLOT(onMessagesGetDialogsAnswer(qint64,qint32,QList<Dialog>,QList<Message>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesGetHistoryAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)), this, SLOT(onMessagesGetHistoryAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesSearchAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)), this, SLOT(onMessagesSearchAnswer(qint64,qint32,QList<Message>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesReadHistoryAnswer(qint64,qint32,qint32,qint32)), this, SLOT(onMessagesReadHistoryAnswer(qint64,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesDeleteHistoryAnswer(qint64,qint32,qint32,qint32)), this, SLOT(onMessagesDeleteHistoryAnswer(qint64,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesDeleteMessagesAnswer(qint64,QList<qint32>)), this, SLOT(onMessagesDeleteMessagesAnswer(qint64,QList<qint32>)));
+    connect(m_telegram, SIGNAL(messagesRestoreMessagesAnswer(qint64,QList<qint32>)), this, SLOT(onMessagesRestoreMessagesAnswer(qint64,QList<qint32>)));
+    connect(m_telegram, SIGNAL(messagesReceivedMessagesAnswer(qint64,QList<qint32>)), this, SLOT(onMessagesReceivedMessagesAnswer(qint64,QList<qint32>)));
+    connect(m_telegram, SIGNAL(messagesForwardMessageAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesForwardMessageAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesForwardMessagesAnswer(qint64,QList<Message>,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesForwardMessagesAnswer(qint64,QList<Message>,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendBroadcastAnswer(qint64,QList<Message>,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesSendBroadcastAnswer(qint64,QList<Message>,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesGetChatsAnswer(qint64,QList<Chat>,QList<User>)), this, SLOT(onMessagesGetChatsAnswer(qint64,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesGetFullChatAnswer(qint64,ChatFull,QList<Chat>,QList<User>)), this, SLOT(onMessagesGetFullChatAnswer(qint64,ChatFull,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(messagesEditChatTitleAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesEditChatTitleAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesEditChatPhotoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesEditChatPhotoAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesAddChatUserAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesAddChatUserAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesDeleteChatUserAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesDeleteChatUserAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(messagesCreateChatAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)), this, SLOT(onMessagesCreateChatAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updatesGetStateAnswer(qint64,qint32,qint32,qint32,qint32,qint32)), this, SLOT(onUpdatesGetStateAnswer(qint64,qint32,qint32,qint32,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updatesGetDifferenceAnswer(qint64,qint32,qint32)), this, SLOT(onUpdatesGetDifferenceAnswer(qint64,qint32,qint32)));
+    connect(m_telegram, SIGNAL(updatesGetDifferenceAnswer(qint64,QList<Message>,QList<EncryptedMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)), this, SLOT(onUpdatesGetDifferenceAnswer(qint64,QList<Message>,QList<EncryptedMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)));
+    connect(m_telegram, SIGNAL(uploadGetFileAnswer(qint64,StorageFileType,qint32,QByteArray,qint32,qint32,qint32)), this, SLOT(onUploadGetFileAnswer(qint64,StorageFileType,qint32,QByteArray,qint32,qint32,qint32)));
+
+    // Start telegram init!
+    m_telegram->init();
 }//TelegramEvents::TelegramEvents
 
 // Errors
@@ -11,6 +84,9 @@ TelegramEvents::onError(qint64 id,
                         qint32 errorCode,
                         QString errorText)
 {
+    qWarning() << "id = " << id
+               << ", errorCode = " << errorCode
+               << ", errorText = " << errorText;
 }//TelegramEvents::onError
 
 void
@@ -18,6 +94,9 @@ TelegramEvents::onAuthSignInError(qint64 id,
                                   qint32 errorCode,
                                   QString errorText)
 {
+    qWarning() << "id = " << id
+               << ", errorCode = " << errorCode
+               << ", errorText = " << errorText;
 }//TelegramEvents::onAuthSignInError
 
 void
@@ -25,17 +104,23 @@ TelegramEvents::onAuthSignUpError(qint64 id,
                                   qint32 errorCode,
                                   QString errorText)
 {
+    qWarning() << "id = " << id
+               << ", errorCode = " << errorCode
+               << ", errorText = " << errorText;
 }//TelegramEvents::onAuthSignUpError
 
 // Registration / authorization
 void
 TelegramEvents::onAuthNeeded()
 {
+    qDebug() << "authNeeded";
+    m_telegram->authCheckPhone();
 }//TelegramEvents::onAuthNeeded
 
 void
 TelegramEvents::onAuthLoggedIn()
 {
+    qDebug() << "authLoggedIn";
 }//TelegramEvents::onAuthLoggedIn
 
 void
