@@ -145,7 +145,6 @@ protected slots:
     void onDisconnected();
     void onConnected();
     void onWoken();
-
     void onFatalError();
 
 protected:

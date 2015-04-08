@@ -149,15 +149,60 @@ TelegramEvents::TelegramEvents(Telegram *t, QObject *parent)
             this, SLOT(onMessagesCreateChatAnswer(qint64,Message,QList<Chat>,QList<User>,QList<ContactsLink>,qint32,qint32)));
 
     // Working with secret chats
+    connect(m_telegram, SIGNAL(messagesCreateEncryptedChatAnswer(qint32,qint32,qint32,qint64)),
+            this, SLOT(onMessagesCreateEncryptedChatAnswer(qint32,qint32,qint32,qint64)));
+    connect(m_telegram, SIGNAL(messagesEncryptedChatRequested(qint32,qint32,qint32,qint64)),
+            this, SLOT(onMessagesEncryptedChatRequested(qint32,qint32,qint32,qint64)));
+    connect(m_telegram, SIGNAL(messagesEncryptedChatCreated(qint32,qint32,qint32,qint64)),
+            this, SLOT(onMessagesEncryptedChatCreated(qint32,qint32,qint32,qint64)));
+    connect(m_telegram, SIGNAL(messagesEncryptedChatDiscarded(qint32)),
+            this, SLOT(onMessagesEncryptedChatDiscarded(qint32)));
+    connect(m_telegram, SIGNAL(messagesSetEncryptedTypingAnswer(qint64,bool)),
+            this, SLOT(onMessagesSetEncryptedTypingAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(messagesReadEncryptedHistoryAnswer(qint64,bool)),
+            this, SLOT(onMessagesReadEncryptedHistoryAnswer(qint64,bool)));
+    connect(m_telegram, SIGNAL(messagesSendEncryptedAnswer(qint64,qint32)),
+            this, SLOT(onMessagesSendEncryptedAnswer(qint64,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendEncryptedFileAnswer(qint64,qint32)),
+            this, SLOT(onMessagesSendEncryptedFileAnswer(qint64,qint32)));
+    connect(m_telegram, SIGNAL(messagesSendEncryptedServiceAnswer(qint64,qint32)),
+            this, SLOT(onMessagesSendEncryptedServiceAnswer(qint64,qint32)));
+    connect(m_telegram, SIGNAL(messagesReceivedQueueAnwer(qint64,QList<qint64>)),
+            this, SLOT(onMessagesReceivedQueueAnwer(qint64,QList<qint64>)));
+
     // Working with geochats
+    connect(m_telegram, SIGNAL(geochatsGetLocatedAnswer(qint64,QList<ChatLocated>,QList<GeoChatMessage>,QList<Chat>,QList<User>)),
+            this, SLOT(onGeochatsGetLocatedAnswer(qint64,QList<ChatLocated>,QList<GeoChatMessage>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(geochatsGetRecentsAnswer(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)),
+            this, SLOT(onGeochatsGetRecentsAnswer(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(geochatsCheckinAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsCheckinAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
+    connect(m_telegram, SIGNAL(geochatsGetFullChatAnswer(qint64,ChatFull,QList<Chat>,QList<User>)),
+            this, SLOT(onGeochatsGetFullChatAnswer(qint64,ChatFull,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(geochatsEditChatTitleAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsEditChatTitleAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
+    connect(m_telegram, SIGNAL(geochatsEditChatPhotoAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsEditChatPhotoAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
+    connect(m_telegram, SIGNAL(geochatsSearchAnswer(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)),
+            this, SLOT(onGeochatsSearchAnswer(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(geochatsGetHistory(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)),
+            this, SLOT(onGeochatsGetHistory(qint64,qint32,QList<GeoChatMessage>,QList<Chat>,QList<User>)));
+    connect(m_telegram, SIGNAL(geochatsSetTyping(qint64,bool)),
+            this, SLOT(onGeochatsSetTyping(qint64,bool)));
+    connect(m_telegram, SIGNAL(geochatsSendMessage(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsSendMessage(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
+    connect(m_telegram, SIGNAL(geochatsSendMedia(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsSendMedia(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
+    connect(m_telegram, SIGNAL(geochatsCreateGeoChatAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)),
+            this, SLOT(onGeochatsCreateGeoChatAnswer(qint64,GeoChatMessage,QList<Chat>,QList<User>,qint32)));
 
     // Working with updates
     connect(m_telegram, SIGNAL(updatesGetStateAnswer(qint64,qint32,qint32,qint32,qint32,qint32)),
             this, SLOT(onUpdatesGetStateAnswer(qint64,qint32,qint32,qint32,qint32,qint32)));
     connect(m_telegram, SIGNAL(updatesGetDifferenceAnswer(qint64,qint32,qint32)),
             this, SLOT(onUpdatesGetDifferenceAnswer(qint64,qint32,qint32)));
-    connect(m_telegram, SIGNAL(updatesGetDifferenceAnswer(qint64,QList<Message>,QList<EncryptedMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)),
-            this, SLOT(onUpdatesGetDifferenceAnswer(qint64,QList<Message>,QList<EncryptedMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)));
+    connect(m_telegram, SIGNAL(updatesGetDifferenceAnswer(qint64,QList<Message>,QList<SecretChatMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)),
+            this, SLOT(onUpdatesGetDifferenceAnswer(qint64,QList<Message>,QList<SecretChatMessage>,QList<Update>,QList<Chat>,QList<User>,UpdatesState,bool)));
 
     // Working with files
     connect(m_telegram, SIGNAL(uploadGetFileAnswer(qint64,StorageFileType,qint32,QByteArray,qint32,qint32,qint32)),
@@ -188,8 +233,8 @@ TelegramEvents::TelegramEvents(Telegram *t, QObject *parent)
             this, SLOT(onUpdatesCombined(QList<Update>,QList<User>,QList<Chat>,qint32,qint32,qint32)));
     connect(m_telegram, SIGNAL(updates(QList<Update>,QList<User>,QList<Chat>,qint32,qint32)),
             this, SLOT(onUpdates(QList<Update>,QList<User>,QList<Chat>,qint32,qint32)));
-    connect(m_telegram, SIGNAL(updateSecretChatMessage(SecretChatMessage&,qint32)),
-            this, SLOT(onUpdateSecretChatMessage(SecretChatMessage&,qint32)));
+    connect(m_telegram, SIGNAL(updateSecretChatMessage(const SecretChatMessage&,qint32)),
+            this, SLOT(onUpdateSecretChatMessage(const SecretChatMessage&,qint32)));
 
     // Additional signals
     connect(m_telegram, SIGNAL(disconnected()), this, SLOT(onDisconnected()));
@@ -240,14 +285,14 @@ TelegramEvents::onAuthSignUpError(qint64 id,
 void
 TelegramEvents::onAuthNeeded()
 {
-    qDebug() << "authNeeded";
+    qDebug("Here");
     m_telegram->authCheckPhone();
 }//TelegramEvents::onAuthNeeded
 
 void
 TelegramEvents::onAuthLoggedIn()
 {
-    qDebug() << "authLoggedIn";
+    qDebug("Here");
 }//TelegramEvents::onAuthLoggedIn
 
 void
@@ -255,12 +300,14 @@ TelegramEvents::onAuthCheckPhoneAnswer(qint64 id,
                                        bool phoneRegistered,
                                        bool phoneInvited)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthCheckPhoneAnswer
 
 void
 TelegramEvents::onAuthCheckPhoneSent(qint64 msgId,
                                      QString phoneNumber)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthCheckPhoneSent
 
 void
@@ -268,36 +315,42 @@ TelegramEvents::onAuthSendCodeAnswer(qint64 id,
                                      bool phoneRegistered,
                                      qint32 sendCallTimeout)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthSendCodeAnswer
 
 void
 TelegramEvents::onAuthSendSmsAnswer(qint64 id,
                                     bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthSendSmsAnswer
 
 void
 TelegramEvents::onAuthSendCallAnswer(qint64 id,
                                      bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthSendCallAnswer
 
 void
 TelegramEvents::onAuthLogOutAnswer(qint64 id,
                                    bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthLogOutAnswer
 
 void
 TelegramEvents::onAuthSendInvitesAnswer(qint64 id,
                                         bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthSendInvitesAnswer
 
 void
 TelegramEvents::onAuthResetAuthorizationsAnswer(qint64 id,
                                                 bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAuthResetAuthorizationsAnswer
 
 // Working with Notifications. Settings
@@ -305,48 +358,56 @@ void
 TelegramEvents::onAccountRegisterDeviceAnswer(qint64 id,
                                               bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountRegisterDeviceAnswer
 
 void
 TelegramEvents::onAccountUnregisterDeviceAnswer(qint64 id,
                                                 bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountUnregisterDeviceAnswer
 
 void
 TelegramEvents::onAccountUpdateNotifySettingsAnswer(qint64 id,
                                                     bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountUpdateNotifySettingsAnswer
 
 void
 TelegramEvents::onAccountGetNotifySettingsAnswer(qint64 id,
                                                  PeerNotifySettings peerNotifySettings)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountGetNotifySettingsAnswer
 
 void
 TelegramEvents::onAccountResetNotifySettingsAnswer(qint64 id,
                                                    bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountResetNotifySettingsAnswer
 
 void
 TelegramEvents::onAccountUpdateProfileAnswer(qint64 id,
                                              User user)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountUpdateProfileAnswer
 
 void
 TelegramEvents::onAccountUpdateStatusAnswer(qint64 id,
                                             bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountUpdateStatusAnswer
 
 void
 TelegramEvents::onAccountGetWallPapersAnswer(qint64 id,
                                              QList<WallPaper> wallPapers)
 {
+    qDebug("Here");
 }//TelegramEvents::onAccountGetWallPapersAnswer
 
 void
@@ -354,12 +415,14 @@ TelegramEvents::onPhotosUploadProfilePhotoAnswer(qint64 id,
                                                  Photo photo,
                                                  QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onPhotosUploadProfilePhotoAnswer
 
 void
 TelegramEvents::onPhotosUpdateProfilePhotoAnswer(qint64 id,
                                                  UserProfilePhoto userProfilePhoto)
 {
+    qDebug("Here");
 }//TelegramEvents::onPhotosUpdateProfilePhotoAnswer
 
 // Working with users
@@ -367,6 +430,7 @@ void
 TelegramEvents::onUsersGetUsersAnswer(qint64 id,
                                       QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onUsersGetUsersAnswer
 
 void
@@ -379,6 +443,7 @@ TelegramEvents::onUsersGetFullUserAnswer(qint64 id,
                                          QString realFirstName,
                                          QString realLastName)
 {
+    qDebug("Here");
 }//TelegramEvents::onUsersGetFullUserAnswer
 
 void
@@ -387,6 +452,7 @@ TelegramEvents::onPhotosGetUserPhotosAnswer(qint64 id,
                                             QList<Photo> photos,
                                             QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onPhotosGetUserPhotosAnswer
 
 // Working with contacts
@@ -394,6 +460,7 @@ void
 TelegramEvents::onContactsGetStatusesAnswer(qint64 id,
                                             QList<ContactStatus> statuses)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsGetStatusesAnswer
 
 void
@@ -402,6 +469,7 @@ TelegramEvents::onContactsGetContactsAnswer(qint64 id,
                                             QList<Contact> contacts,
                                             QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsGetContactsAnswer
 
 void
@@ -410,6 +478,7 @@ TelegramEvents::onContactsImportContactsAnswer(qint64 id,
                                                QList<qint64> retryContacts,
                                                QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsImportContactsAnswer
 
 void
@@ -418,12 +487,14 @@ TelegramEvents::onContactsDeleteContactAnswer(qint64 id,
                                               ContactsForeignLink foreignLink,
                                               User user)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsDeleteContactAnswer
 
 void
 TelegramEvents::onContactsDeleteContactsAnswer(qint64 id,
                                                bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsDeleteContactsAnswer
 
 // Working with blacklist
@@ -431,18 +502,21 @@ void
 TelegramEvents::onContactsBlockAnswer(qint64 id,
                                       bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsBlockAnswer
 
 void
 TelegramEvents::onContactsUnblockAnswer(qint64 id,
                                         bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsUnblockAnswer
 
 void
 TelegramEvents::onContactsBlockResult(qint64 id,
                                       bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsBlockResult
 
 void
@@ -451,6 +525,7 @@ TelegramEvents::onContactsGetBlockedAnswer(qint64 id,
                                            QList<ContactBlocked> blocked,
                                            QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onContactsGetBlockedAnswer
 
 // Working with messages
@@ -462,6 +537,7 @@ TelegramEvents::onMessagesSendMessageAnswer(qint64 id,
                                             qint32 seq,
                                             QList<ContactsLink> links)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendMessageAnswer
 
 void
@@ -473,6 +549,7 @@ TelegramEvents::onMessagesSendMediaAnswer(qint64 id,
                                           qint32 pts,
                                           qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendMediaAnswer
 
 void
@@ -484,6 +561,7 @@ TelegramEvents::onMessagesSendPhotoAnswer(qint64 id,
                                           qint32 pts,
                                           qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendPhotoAnswer
 
 void
@@ -495,6 +573,7 @@ TelegramEvents::onMessagesSendGeoPointAnswer(qint64 id,
                                              qint32 pts,
                                              qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendGeoPointAnswer
 
 void
@@ -506,6 +585,7 @@ TelegramEvents::onMessagesSendContactAnswer(qint64 id,
                                             qint32 pts,
                                             qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendContactAnswer
 
 void
@@ -517,6 +597,7 @@ TelegramEvents::onMessagesSendVideoAnswer(qint64 id,
                                           qint32 pts,
                                           qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendVideoAnswer
 
 void
@@ -528,6 +609,7 @@ TelegramEvents::onMessagesSendAudioAnswer(qint64 id,
                                           qint32 pts,
                                           qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendAudioAnswer
 
 void
@@ -539,12 +621,14 @@ TelegramEvents::onMessagesSendDocumentAnswer(qint64 id,
                                              qint32 pts,
                                              qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendDocumentAnswer
 
 void
 TelegramEvents::onMessagesSetTypingAnswer(qint64 id,
                                           bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSetTypingAnswer
 
 void
@@ -554,6 +638,7 @@ TelegramEvents::onMessagesGetMessagesAnswer(qint64 id,
                                             QList<Chat> chats,
                                             QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesGetMessagesAnswer
 
 void
@@ -564,6 +649,7 @@ TelegramEvents::onMessagesGetDialogsAnswer(qint64 id,
                                            QList<Chat> chats,
                                            QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesGetDialogsAnswer
 
 void
@@ -573,6 +659,7 @@ TelegramEvents::onMessagesGetHistoryAnswer(qint64 id,
                                            QList<Chat> chats,
                                            QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesGetHistoryAnswer
 
 void
@@ -582,6 +669,7 @@ TelegramEvents::onMessagesSearchAnswer(qint64 id,
                                        QList<Chat> chats,
                                        QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSearchAnswer
 
 void
@@ -590,6 +678,7 @@ TelegramEvents::onMessagesReadHistoryAnswer(qint64 id,
                                             qint32 seq,
                                             qint32 offset)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesReadHistoryAnswer
 
 void
@@ -598,30 +687,35 @@ TelegramEvents::onMessagesDeleteHistoryAnswer(qint64 id,
                                               qint32 seq,
                                               qint32 offset)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesDeleteHistoryAnswer
 
 void
 TelegramEvents::onMessagesReadMessageContentsAnswer(qint64 msgId,
                                                     QList<qint32> watchedIds)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesReadMessageContentsAnswer
 
 void
 TelegramEvents::onMessagesDeleteMessagesAnswer(qint64 id,
                                                QList<qint32> deletedMsgIds)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesDeleteMessagesAnswer
 
 void
 TelegramEvents::onMessagesRestoreMessagesAnswer(qint64 id,
                                                 QList<qint32> restoredMsgIds)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesRestoreMessagesAnswer
 
 void
 TelegramEvents::onMessagesReceivedMessagesAnswer(qint64 id,
                                                  QList<qint32> confirmedMsgIds)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesReceivedMessagesAnswer
 
 void
@@ -633,6 +727,7 @@ TelegramEvents::onMessagesForwardMessageAnswer(qint64 id,
                                                qint32 pts,
                                                qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesForwardMessageAnswer
 
 void
@@ -644,6 +739,7 @@ TelegramEvents::onMessagesForwardMessagesAnswer(qint64 id,
                                                 qint32 pts,
                                                 qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesForwardMessagesAnswer
 
 void
@@ -655,6 +751,7 @@ TelegramEvents::onMessagesSendBroadcastAnswer(qint64 id,
                                               qint32 pts,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendBroadcastAnswer
 
 // Working with chats
@@ -663,6 +760,7 @@ TelegramEvents::onMessagesGetChatsAnswer(qint64 id,
                                          QList<Chat> chats,
                                          QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesGetChatsAnswer
 
 void
@@ -671,6 +769,7 @@ TelegramEvents::onMessagesGetFullChatAnswer(qint64 id,
                                             QList<Chat> chats,
                                             QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesGetFullChatAnswer
 
 void
@@ -682,6 +781,7 @@ TelegramEvents::onMessagesEditChatTitleAnswer(qint64 id,
                                               qint32 pts,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesEditChatTitleAnswer
 
 void
@@ -693,6 +793,7 @@ TelegramEvents::onMessagesEditChatPhotoAnswer(qint64 id,
                                               qint32 pts,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesEditChatPhotoAnswer
 
 void
@@ -704,6 +805,7 @@ TelegramEvents::onMessagesAddChatUserAnswer(qint64 id,
                                             qint32 pts,
                                             qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesAddChatUserAnswer
 
 void
@@ -715,6 +817,7 @@ TelegramEvents::onMessagesDeleteChatUserAnswer(qint64 id,
                                                qint32 pts,
                                                qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesDeleteChatUserAnswer
 
 void
@@ -726,6 +829,7 @@ TelegramEvents::onMessagesCreateChatAnswer(qint64 id,
                                            qint32 pts,
                                            qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesCreateChatAnswer
 
 // Working with secret chats
@@ -735,6 +839,7 @@ TelegramEvents::onMessagesCreateEncryptedChatAnswer(qint32 chatId,
                                                     qint32 peerId,
                                                     qint64 accessHash)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesCreateEncryptedChatAnswer
 
 void
@@ -743,6 +848,7 @@ TelegramEvents::onMessagesEncryptedChatRequested(qint32 chatId,
                                                  qint32 peerId,
                                                  qint64 accessHash)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesEncryptedChatRequested
 
 void
@@ -751,23 +857,27 @@ TelegramEvents::onMessagesEncryptedChatCreated(qint32 chatId,
                                                qint32 peerId,
                                                qint64 accessHash)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesEncryptedChatCreated
 
 void
 TelegramEvents::onMessagesEncryptedChatDiscarded(qint32 chatId)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesEncryptedChatDiscarded
 
 void
 TelegramEvents::onMessagesSetEncryptedTypingAnswer(qint64 id,
                                                    bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSetEncryptedTypingAnswer
 
 void
 TelegramEvents::onMessagesReadEncryptedHistoryAnswer(qint64 id,
                                                      bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesReadEncryptedHistoryAnswer
 
 void
@@ -776,6 +886,7 @@ TelegramEvents::onMessagesSendEncryptedAnswer(qint64 id,
                                               EncryptedFile encryptedFile
                                               /* = EncryptedFile()*/)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendEncryptedAnswer
 
 void
@@ -784,6 +895,7 @@ TelegramEvents::onMessagesSendEncryptedFileAnswer(qint64 id,
                                                   EncryptedFile encryptedFile
                                                   /* = EncryptedFile()*/)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendEncryptedFileAnswer
 
 void
@@ -792,12 +904,14 @@ TelegramEvents::onMessagesSendEncryptedServiceAnswer(qint64 id,
                                                      EncryptedFile encryptedFile
                                                      /* = EncryptedFile()*/)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesSendEncryptedServiceAnswer
 
 void
 TelegramEvents::onMessagesReceivedQueueAnwer(qint64 id,
                                              QList<qint64> msgIds)
 {
+    qDebug("Here");
 }//TelegramEvents::onMessagesReceivedQueueAnwer
 
 
@@ -809,6 +923,7 @@ TelegramEvents::onGeochatsGetLocatedAnswer(qint64 id,
                                            QList<Chat> chats,
                                            QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsGetLocatedAnswer
 
 void
@@ -818,6 +933,7 @@ TelegramEvents::onGeochatsGetRecentsAnswer(qint64 id,
                                            QList<Chat> chats,
                                            QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsGetRecentsAnswer
 
 void
@@ -827,6 +943,7 @@ TelegramEvents::onGeochatsCheckinAnswer(qint64 id,
                                         QList<User> users,
                                         qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsCheckinAnswer
 
 void
@@ -835,6 +952,7 @@ TelegramEvents::onGeochatsGetFullChatAnswer(qint64 id,
                                             QList<Chat> chats,
                                             QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsGetFullChatAnswer
 
 void
@@ -844,6 +962,7 @@ TelegramEvents::onGeochatsEditChatTitleAnswer(qint64 id,
                                               QList<User> user,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsEditChatTitleAnswer
 
 void
@@ -853,6 +972,7 @@ TelegramEvents::onGeochatsEditChatPhotoAnswer(qint64 id,
                                               QList<User> user,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsEditChatPhotoAnswer
 
 void
@@ -862,6 +982,7 @@ TelegramEvents::onGeochatsSearchAnswer(qint64 id,
                                        QList<Chat> chats,
                                        QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsSearchAnswer
 
 void
@@ -871,12 +992,14 @@ TelegramEvents::onGeochatsGetHistory(qint64 id,
                                      QList<Chat> chats,
                                      QList<User> users)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsGetHistory
 
 void
 TelegramEvents::onGeochatsSetTyping(qint64 id,
                                     bool ok)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsSetTyping
 
 void
@@ -886,6 +1009,7 @@ TelegramEvents::onGeochatsSendMessage(qint64 id,
                                       QList<User> user,
                                       qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsSendMessage
 
 void
@@ -895,6 +1019,7 @@ TelegramEvents::onGeochatsSendMedia(qint64 id,
                                     QList<User> user,
                                     qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsSendMedia
 
 void
@@ -904,6 +1029,7 @@ TelegramEvents::onGeochatsCreateGeoChatAnswer(qint64 id,
                                               QList<User> users,
                                               qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onGeochatsCreateGeoChatAnswer
 
 
@@ -916,6 +1042,7 @@ TelegramEvents::onUpdatesGetStateAnswer(qint64 id,
                                         qint32 seq,
                                         qint32 unreadCount)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdatesGetStateAnswer
 
 void
@@ -923,6 +1050,7 @@ TelegramEvents::onUpdatesGetDifferenceAnswer(qint64 id,
                                              qint32 date,
                                              qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdatesGetDifferenceAnswer
 
 void
@@ -935,6 +1063,7 @@ TelegramEvents::onUpdatesGetDifferenceAnswer(qint64 id,
                                              UpdatesState state,
                                              bool isIntermediateState)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdatesGetDifferenceAnswer
 
 
@@ -948,12 +1077,14 @@ TelegramEvents::onUploadGetFileAnswer(qint64 fileId,
                                       qint32 downloaded,
                                       qint32 total)
 {
+    qDebug("Here");
 }//TelegramEvents::onUploadGetFileAnswer
 
 void
 TelegramEvents::onUploadCancelFileAnswer(qint64 fileId,
                                          bool cancelled)
 {
+    qDebug("Here");
 }//TelegramEvents::onUploadCancelFileAnswer
 
 void
@@ -962,6 +1093,7 @@ TelegramEvents::onUploadSendFileAnswer(qint64 fileId,
                                        qint32 uploaded,
                                        qint32 totalSize)
 {
+    qDebug("Here");
 }//TelegramEvents::onUploadSendFileAnswer
 
 
@@ -971,12 +1103,14 @@ TelegramEvents::onHelpGetSuppportAnswer(qint64 id,
                                         QString phoneNumber,
                                         User user)
 {
+    qDebug("Here");
 }//TelegramEvents::onHelpGetSuppportAnswer
 
 void
 TelegramEvents::onHelpGetInviteTextAnswer(qint64 id,
                                           QString message)
 {
+    qDebug("Here");
 }//TelegramEvents::onHelpGetInviteTextAnswer
 
 void
@@ -986,12 +1120,14 @@ TelegramEvents::onHelpGetAppUpdateAnswer(qint64 id,
                                          QString url,
                                          QString text)
 {
+    qDebug("Here");
 }//TelegramEvents::onHelpGetAppUpdateAnswer
 
 // Updates
 void
 TelegramEvents::onUpdatesTooLong()
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdatesTooLong
 
 void
@@ -1002,6 +1138,7 @@ TelegramEvents::onUpdateShortMessage(qint32 id,
                                      qint32 date,
                                      qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdateShortMessage
 
 void
@@ -1013,12 +1150,14 @@ TelegramEvents::onUpdateShortChatMessage(qint32 id,
                                          qint32 date,
                                          qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdateShortChatMessage
 
 void
 TelegramEvents::onUpdateShort(Update update,
                               qint32 date)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdateShort
 
 void
@@ -1029,6 +1168,7 @@ TelegramEvents::onUpdatesCombined(QList<Update> updates,
                                   qint32 seqStart,
                                   qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdatesCombined
 
 void
@@ -1038,12 +1178,14 @@ TelegramEvents::onUpdates(QList<Update> udts,
                           qint32 date,
                           qint32 seq)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdates
 
 void
 TelegramEvents::onUpdateSecretChatMessage(const SecretChatMessage &secretChatMessage,
                                           qint32 qts)
 {
+    qDebug("Here");
 }//TelegramEvents::onUpdateSecretChatMessage
 
 
@@ -1051,21 +1193,24 @@ TelegramEvents::onUpdateSecretChatMessage(const SecretChatMessage &secretChatMes
 void
 TelegramEvents::onDisconnected()
 {
+    qDebug("Here");
 }//TelegramEvents::onDisconnected
 
 void
 TelegramEvents::onConnected()
 {
+    qDebug("Here");
 }//TelegramEvents::onConnected
 
 void
 TelegramEvents::onWoken()
 {
+    qDebug("Here");
 }//TelegramEvents::onWoken
 
 
 void
 TelegramEvents::onFatalError()
 {
+    qDebug("Here");
 }//TelegramEvents::onFatalError
-
