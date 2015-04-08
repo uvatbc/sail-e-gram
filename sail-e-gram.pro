@@ -16,10 +16,10 @@ CONFIG   += sailfishapp
 
 SOURCES  += src/sail-e-gram.cpp \
             src/MainWindow.cpp \
-    TelegramEvents.cpp
+            src/TelegramEvents.cpp
 
 HEADERS  += src/MainWindow.h \
-    TelegramEvents.h
+            src/TelegramEvents.h
 
 RESOURCES += sail-e-gram.qrc
 
