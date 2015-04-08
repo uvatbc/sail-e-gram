@@ -1,7 +1,7 @@
 #ifndef TELEGRAMEVENTS_H
 #define TELEGRAMEVENTS_H
 
-#include <QObject>
+#include "telegram.h"
 
 class TelegramEvents : public QObject
 {
