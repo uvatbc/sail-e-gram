@@ -24,6 +24,9 @@ private:
     QString         m_configDir;
     Telegram       *m_telegram;
     TelegramEvents *m_tgEvents;
+    QSettings      *m_settings;
 };
+
+#define SK_MSISDN "msisdn"
 
 #endif // MAINWINDOW_H

@@ -39,5 +39,6 @@ Makefile*
 # Everything related to libqtelegram
 libqtelegram/
 
-# DO NOT ALLOW tg.key to come in
+# DO NOT ALLOW tg.key or api.json to come in
 tg.key
+api.json

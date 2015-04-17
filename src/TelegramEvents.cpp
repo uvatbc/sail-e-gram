@@ -307,7 +307,7 @@ void
 TelegramEvents::onAuthCheckPhoneSent(qint64 msgId,
                                      QString phoneNumber)
 {
-    qDebug("Here");
+    qDebug() << "msgId =" << msgId << ", num =" << phoneNumber;
 }//TelegramEvents::onAuthCheckPhoneSent
 
 void

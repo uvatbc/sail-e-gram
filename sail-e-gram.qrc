@@ -1,5 +1,6 @@
 <RCC>
     <qresource prefix="/">
         <file alias="tg.key">tg.key</file>
+        <file alias="api.json">api.json</file>
     </qresource>
 </RCC>
