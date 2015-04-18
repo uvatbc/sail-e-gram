@@ -32,12 +32,14 @@ Makefile*
 #QtCtreator Qml
 *.qmlproject.user
 *.qmlproject.user.*
+rpm/sail-e-gram.spec*
 
 # VIM:
 *.swp
 
 # Everything related to libqtelegram
 libqtelegram/
+app-dev/
 
 # DO NOT ALLOW tg.key or api.json to come in
 tg.key

@@ -3,6 +3,8 @@ How to use libqtelegram sources in your own code:
 -> Make sure you comply with the GPL license!
 
 -> To to telegram.org and register your application to get an application hash and an ID.
+You will also get a tg.key file. This is supposed to be a secret and it should NOT be in checked in with your source.
+It does need to be added to your binary, so you should pull it in through your qrc.
 
 -> Check out the libqtelegram source:
 bzr branch lp:libqtelegram
@@ -19,4 +21,23 @@ These two functions will be called frequently by the libqtelegram sources, so tr
 -> When your app runs the first time, your UI will need to get the users phone number (MSISDN).
 The msisdn will be required to create an instance of the Telegram class (m_telegram).
 
--> As soon as m_telegram is created, it will do a bit of negotiation with the telegram servers.
+-> make sure you pay attention to Qt warnings about signals and slots changing!
+
+-> As soon as m_telegram is created, it will look for settings that it might have saved in the config directory. If there is nothing, it will create a settings directory for the msisdn and settings file inside it.
+
+-> Your code will need to call m_telegram->init() once it is ready to handle signals and talk over the network.
+m_telegram starts off by a handshake <TODO: ??> with the telegram servers.
+
+-> Signals fired:
+->-> onConnected
+->-> onAuthNeeded
+->->-> Respond to this by calling m_telegram->authCheckPhone();
+->-> onAuthCheckPhoneSent
+->-> onDisconnected
+->-> onAuthCheckPhoneSent
+->-> onConnected
+->-> onAuthCheckPhoneAnswer
+->->-> Respond to this with m_telegram->authSendCode();
+->-> onAuthSendCodeAnswer
+->->-> This is where you need to ask the user to enter the code and show the timeout before the call is made.
+->-> onDisconnected

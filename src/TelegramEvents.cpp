@@ -300,7 +300,9 @@ TelegramEvents::onAuthCheckPhoneAnswer(qint64 id,
                                        bool phoneRegistered,
                                        bool phoneInvited)
 {
-    qDebug("Here");
+    qDebug() << "id = " << id << ", registered: " << phoneRegistered
+             << ", invited: " << phoneInvited;
+    m_telegram->authSendCode();
 }//TelegramEvents::onAuthCheckPhoneAnswer
 
 void
@@ -315,7 +317,8 @@ TelegramEvents::onAuthSendCodeAnswer(qint64 id,
                                      bool phoneRegistered,
                                      qint32 sendCallTimeout)
 {
-    qDebug("Here");
+    qDebug() << "id = " << id << ", registered: " << phoneRegistered
+             << ", timeout: " << sendCallTimeout;
 }//TelegramEvents::onAuthSendCodeAnswer
 
 void
