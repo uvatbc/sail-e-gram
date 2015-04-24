@@ -10,6 +10,8 @@ To compile:
 3. Begin the compile!
 
 
-To compile libqtelegram:
-1. Start from ubuntu:14.10
-2. apt-get update ; apt-get upgrade ; apt-get install bzr cppcheck dh-exec cmake ; apt-get build-dep qtcreator
+To compile libqtelegram: Start from ubuntu:14.10
+apt-get update ; apt-get upgrade --assume-yes ; apt-get install --assume-yes bzr cppcheck dh-exec cmake libphonon4qt5-dev qtmultimedia5-dev libthumbnailer-dev libssl-dev qtdeclarative5-dev-tools qtdeclarative5-private-dev pkg-config libmediainfo-dev libsqlite3-dev ; apt-get build-dep qtcreator
+rm -rf libqtelegram ; bzr branch lp:libqtelegram
+cd libqtelegram ; rm -rf bld ; mkdir bld ; cd bld
+cmake -DCMAKE_INSTALL_PREFIX=./usr -DCMAKE_INSTALL_LIBDIR=lib/x86_64-linux-gnu/ ..
