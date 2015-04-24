@@ -4,7 +4,7 @@
 #
 # To create a container with the necessary dependancies to compile libqtelegram: 'make -f build-libqtelegram.makefile prepare_docker_container'
 
-DEPS=make bzr cppcheck dh-exec cmake libphonon4qt5-dev qtmultimedia5-dev libthumbnailer-dev libssl-dev qtdeclarative5-dev-tools qtdeclarative5-private-dev pkg-config libmediainfo-dev libsqlite3-dev
+DEPS=make bzr cppcheck dh-exec cmake libphonon4qt5-dev qtmultimedia5-dev libthumbnailer-dev libssl-dev qtdeclarative5-dev-tools qtdeclarative5-private-dev pkg-config libmediainfo-dev libsqlite3-dev qt5-default
 
 compile_incremental:
 	echo '#!/bin/bash' > tmp.sh
